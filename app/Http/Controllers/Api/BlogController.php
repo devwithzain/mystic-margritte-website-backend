@@ -38,14 +38,22 @@ class BlogController extends Controller
     public function show(string $id)
     {
         $service = Blog::find($id);
+        $blog = Blog::with('comments.user')->find($id);
+
         if (!$service) {
             return response()->json([
                 'error' => 'Not Found.'
             ], 404);
         }
 
+        if (!$blog) {
+            return response()->json([
+                'error' => 'Blog not found.'
+            ], 404);
+        }
+
         return response()->json([
-            'data' => new BlogResource($service)
+            'data' => new BlogResource($blog)
         ], 200);
     }
     public function update(BlogRequest $request, string $id)

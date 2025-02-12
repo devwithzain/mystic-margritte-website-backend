@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\ContactFormController;
@@ -33,6 +34,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart', [CartController::class, 'store']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
     Route::delete('/cart', [CartController::class, 'deleteAll']);
+
+    // Blog
+    Route::post('/blogs/{blog}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
 
 // Admin Routes
@@ -54,11 +59,11 @@ Route::prefix('products')->group(function () {
 
 // Blogs
 Route::prefix('blogs')->group(function () {
-    Route::get('/', [ServiceController::class, 'index']);
-    Route::post('/', [ServiceController::class, 'store']);
-    Route::get('/{id}', [ServiceController::class, 'show']);
-    Route::put('/{id}', [ServiceController::class, 'update']);
-    Route::delete('/{id}', [ServiceController::class, 'destroy']);
+    Route::get('/', [BlogController::class, 'index']);
+    Route::post('/', [BlogController::class, 'store']);
+    Route::get('/{id}', [BlogController::class, 'show']);
+    Route::put('/{id}', [BlogController::class, 'update']);
+    Route::delete('/{id}', [BlogController::class, 'destroy']);
 });
 
 // Checkout
