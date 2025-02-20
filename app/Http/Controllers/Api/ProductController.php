@@ -14,10 +14,9 @@ class ProductController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => ProductResource::collection(Product::all())
+            'products' => ProductResource::collection(Product::all())
         ], 200);
     }
-
     public function store(ProductRequest $request)
     {
         try {
@@ -40,9 +39,9 @@ class ProductController extends Controller
                 'category' => $validatedData['category'],
                 'size' => $validatedData['size'],
                 'price' => $validatedData['price'],
-                'image' => json_encode($imagePaths),
-            ]);
 
+                'image' => !empty($imagePaths) ? json_encode($imagePaths) : null,
+            ]);
             return response()->json([
                 'message' => 'Product created successfully.',
                 'product' => new ProductResource($product)
@@ -51,22 +50,20 @@ class ProductController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
     public function show(string $id)
     {
         $product = Product::find($id);
         if (!$product) {
-            return response()->json(['error' => 'Not Found.'], 404);
+            return response()->json(['error' => 'Product Not Found.'], 404);
         }
-        return response()->json(['data' => new ProductResource($product)], 200);
+        return response()->json(['product' => new ProductResource($product)], 200);
     }
-
     public function update(ProductRequest $request, string $id)
     {
         try {
             $product = Product::find($id);
             if (!$product) {
-                return response()->json(['error' => 'Not Found.'], 404);
+                return response()->json(['error' => 'Product Not Found.'], 404);
             }
 
             $validated = $request->validated();
@@ -80,6 +77,7 @@ class ProductController extends Controller
                     }
                 }
 
+                // Upload new images
                 $newImagePaths = [];
                 foreach ($request->file('image') as $image) {
                     $imageName = 'products/' . Str::random(32) . '.' . $image->getClientOriginalExtension();
@@ -87,14 +85,14 @@ class ProductController extends Controller
                     $newImagePaths[] = $imageName;
                 }
 
-                $product->image = json_encode($newImagePaths);
+                $validated['image'] = !empty($newImagePaths) ? json_encode($newImagePaths) : null;
             }
 
             $product->update($validated);
 
             return response()->json([
                 'message' => "Product successfully updated.",
-                'data' => new ProductResource($product)
+                'product' => new ProductResource($product)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -109,20 +107,18 @@ class ProductController extends Controller
 
         if (!$product) {
             return response()->json([
-                'error' => 'Not Found.'
+                'error' => 'Product Not Found.'
             ], 404);
         }
 
         $storage = Storage::disk('public');
 
-        // Decode JSON to get image array
         $images = json_decode($product->image, true);
 
         if (!empty($images)) {
             foreach ($images as $imagePath) {
-                $fullPath = 'products/' . $imagePath;
-                if ($storage->exists($fullPath)) {
-                    $storage->delete($fullPath);
+                if ($storage->exists($imagePath)) {
+                    $storage->delete($imagePath);
                 }
             }
         }
@@ -133,5 +129,4 @@ class ProductController extends Controller
             'success' => "Product successfully deleted."
         ], 200);
     }
-
 }

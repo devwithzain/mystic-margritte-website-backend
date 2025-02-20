@@ -49,22 +49,18 @@ Route::post('/contact', [FormController::class, 'sendContactForm']);
 Route::post('/contact-us', [ContactFormController::class, 'sendForm']);
 
 // Products
-Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::post('/', [ProductController::class, 'store']);
-    Route::get('/{id}', [ProductController::class, 'show']);
-    Route::put('/{id}', [ProductController::class, 'update']);
-    Route::delete('/{id}', [ProductController::class, 'destroy']);
-});
+Route::get('/products', [ProductController::class, 'index']);
+Route::post('/product', [ProductController::class, 'store']);
+Route::get('/product/{id}', [ProductController::class, 'show']);
+Route::post('/product/{id}', [ProductController::class, 'update']);
+Route::delete('/product/{id}', [ProductController::class, 'destroy']);
 
 // Blogs
-Route::prefix('blogs')->group(function () {
-    Route::get('/', [BlogController::class, 'index']);
-    Route::post('/', [BlogController::class, 'store']);
-    Route::get('/{id}', [BlogController::class, 'show']);
-    Route::put('/{id}', [BlogController::class, 'update']);
-    Route::delete('/{id}', [BlogController::class, 'destroy']);
-});
+Route::get('/blogs', [BlogController::class, 'index']);
+Route::post('/blog', [BlogController::class, 'store']);
+Route::get('/blog/{id}', [BlogController::class, 'show']);
+Route::post('/blog/{id}', [BlogController::class, 'update']);
+Route::delete('/blog/{id}', [BlogController::class, 'destroy']);
 
 // Checkout
 Route::post('/checkout', [CheckoutController::class, 'createSession']);

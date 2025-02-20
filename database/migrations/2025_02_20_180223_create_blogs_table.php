@@ -7,18 +7,17 @@ use Illuminate\Database\Migrations\Migration;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('blogs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->text('address')->nullable();
-            $table->string('phone_number');
-            $table->string('state');
+            $table->string('title');
+            $table->text('short_description');
+            $table->text('description');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('blogs');
     }
 };

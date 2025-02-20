@@ -13,38 +13,32 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $services = Blog::all();
+        $blogs = Blog::all();
         return response()->json([
-            'data' => BlogResource::collection($services)
+            'blogs' => BlogResource::collection($blogs)
         ], 200);
     }
     public function store(BlogRequest $request)
     {
         $validatedData = $request->validated();
         $image = $request->file('image');
-        $imageName = 'services/' . Str::random(32) . '.' . $image->getClientOriginalExtension();
+        $imageName = 'blogs/' . Str::random(32) . '.' . $image->getClientOriginalExtension();
         Storage::disk('public')->put($imageName, file_get_contents($image));
-        $service = Blog::create([
+        $blog = Blog::create([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
             'short_description' => $validatedData['short_description'],
             'image' => $imageName,
         ]);
         return response()->json([
-            'message' => 'Service created successfully.',
-            'service' => $service
+            'message' => 'Blog created successfully.',
+            'service' => $blog
         ]);
     }
     public function show(string $id)
     {
-        $service = Blog::find($id);
+        $blog = Blog::find($id);
         $blog = Blog::with('comments.user')->find($id);
-
-        if (!$service) {
-            return response()->json([
-                'error' => 'Not Found.'
-            ], 404);
-        }
 
         if (!$blog) {
             return response()->json([
@@ -53,53 +47,53 @@ class BlogController extends Controller
         }
 
         return response()->json([
-            'data' => new BlogResource($blog)
+            'blog' => new BlogResource($blog)
         ], 200);
     }
     public function update(BlogRequest $request, string $id)
     {
-        $service = Blog::find($id);
-        if (!$service) {
+        $blog = Blog::find($id);
+        if (!$blog) {
             return response()->json([
                 'error' => 'Not Found.'
             ], 404);
         }
         $validatedData = $request->validated();
-        $service->title = $validatedData['title'];
-        $service->description = $validatedData['description'];
-        $service->short_description = $validatedData['short_description'];
+        $blog->title = $validatedData['title'];
+        $blog->description = $validatedData['description'];
+        $blog->short_description = $validatedData['short_description'];
 
         if ($request->hasFile('image')) {
-            if ($service->image) {
-                Storage::disk('public')->delete($service->image);
+            if ($blog->image) {
+                Storage::disk('public')->delete($blog->image);
             }
             $image = $request->file('image');
-            $imageName = 'services/' . Str::random(32) . '.' . $image->getClientOriginalExtension();
+            $imageName = 'blogs/' . Str::random(32) . '.' . $image->getClientOriginalExtension();
             Storage::disk('public')->put($imageName, file_get_contents($image));
 
-            $service->image = $imageName;
+            $blog->image = $imageName;
         }
-        $service->save();
+        $blog->save();
         return response()->json([
-            'message' => 'Service updated successfully.',
-            'service' => $service
+            'message' => 'Blog updated successfully.',
+            'Blog' => $blog
         ]);
 
     }
     public function destroy(string $id)
     {
-        $service = Blog::find($id);
-        if (!$service) {
+        $blog = Blog::find($id);
+        if (!$blog) {
             return response()->json([
-                'error' => 'Not Found.'
+                'error' => 'Blog Not Found.'
             ], 404);
         }
-        if ($service->image) {
-            Storage::disk('public')->delete($service->image);
+        if ($blog->image) {
+            Storage::disk('public')->delete($blog->image);
         }
-        $service->delete();
+        $blog->delete();
         return response()->json([
-            'message' => 'Service deleted successfully.'
+            'message' => 'Blog deleted successfully.'
         ]);
     }
 }

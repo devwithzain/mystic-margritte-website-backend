@@ -14,7 +14,7 @@ class BlogResource extends JsonResource
             'title' => $this->title,
             'short_description' => $this->short_description,
             'description' => $this->description,
-            'image' => $this->image ? asset('storage/' . $this->image) : null,
+            'image' => $this->image ? 'storage/' . $this->image : null,
             'created_at' => $this->created_at->toDateTimeString(),
             'comments' => CommentResource::collection($this->comments)
         ];
