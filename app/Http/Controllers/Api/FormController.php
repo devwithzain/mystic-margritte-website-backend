@@ -2,26 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Requests\SendContactFormRequest;
 
 class FormController extends Controller
 {
-    public function sendContactForm(SendContactFormRequest $request)
-    {
-        $data = $request->validated();
-        $email = 'info@themountingking.com';
-        $subject = "Appointment Confirmation";
+   public function sendContactForm(Request $request)
+   {
+      $data = $request->validate([
+         'name' => 'required|string|max:255',
+         'email' => 'required|email|max:255',
+         'phone' => 'nullable|string|max:20',
+         'specialRequest' => 'nullable|string',
+         'agreeToTerms' => 'nullable|boolean',
+         'specialOffer' => 'nullable|boolean',
+      ]);
 
-        try {
-            Mail::to($email)->send(new ContactFormMail($subject, $data, $data['selectedItems'], $data['selectedDate']));
-        } catch (\Exception $e) {
-            Log::error('Failed to send contact form email: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to send email. Please try again later.'], 500);
-        }
+      $subject = "New Appointment Request from " . $data['name'];
 
-        return response()->json(['success' => 'Form submitted successfully. An email has been sent to your address.'], 200);
-    }
+      try {
+         Mail::to(config('mail.from.address'))->send(new ContactFormMail($subject, $data));
+      } catch (\Exception $e) {
+         Log::error('Failed to send contact form email: ' . $e->getMessage());
+         return response()->json(['error' => 'Failed to send email. Please try again later.'], 500);
+      }
+      return response()->json(['success' => "Your request has been submitted successfully."], 200);
+   }
 }
