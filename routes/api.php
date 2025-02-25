@@ -10,8 +10,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\BookNowController;
 use App\Http\Controllers\Api\NewsletterController;
-use App\Http\Controllers\Api\ContactFormController;
 use App\Http\Controllers\Api\ResetPasswordController;
 
 // Auth Routes
@@ -55,6 +55,7 @@ Route::delete("/deleteUser/{id}", [AuthController::class, "deleteUser"]);
 
 // Contact Forms
 Route::post('/contact', [FormController::class, 'sendContactForm']);
+Route::post('/book-now', [BookNowController::class, 'sendBookForm']);
 
 // Products
 Route::get('/products', [ProductController::class, 'index']);

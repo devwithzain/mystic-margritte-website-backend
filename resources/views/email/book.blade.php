@@ -2,7 +2,7 @@
 <html>
 
 <head>
-   <title>New Message.</title>
+   <title>New Booking.</title>
    <style>
    body {
       font-family: Arial, sans-serif;
@@ -28,9 +28,13 @@
 </head>
 
 <body>
-   <h2>New Message.</h2>
+   <h2>New Booking.</h2>
    <p><strong>Name:</strong> {{ $name }}</p>
-   <p><strong>Email:</strong> {{ $email }}</p>
+   <p><strong>Last Name:</strong> {{ $lastName }}</p>
+   <p><strong>Services:</strong> {{ $services }}</p>
+   <p><strong>Healing Topics:</strong> {{ $healingTopics }}</p>
+   <p><strong>Preferred Time:</strong> {{ $preferredTime }}</p>
+   <p><strong>City And State:</strong> {{ $cityAndState }}</p>
    <p><strong>Special Message:</strong> {{ $specialMessage }}</p>
 </body>
 

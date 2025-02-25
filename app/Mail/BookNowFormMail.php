@@ -7,23 +7,28 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Support\Facades\Log;
 
-class ContactFormMail extends Mailable
+class BookNowFormMail extends Mailable
 {
    use Queueable, SerializesModels;
 
    public $name;
-   public $email;
+   public $lastName;
+   public $services;
+   public $healingTopics;
+   public $preferredTime;
+   public $cityAndState;
    public $specialMessage;
    public $subject;
 
    public function __construct($subject, $data)
    {
-      Log::error('Failed to send contact form email: ', $data);
-
       $this->name = $data['name'];
-      $this->email = $data['email'];
+      $this->lastName = $data['lastName'];
+      $this->services = $data['services'];
+      $this->healingTopics = $data['healingTopics'];
+      $this->preferredTime = $data['preferredTime'];
+      $this->cityAndState = $data['cityAndState'];
       $this->specialMessage = $data['specialMessage'];
       $this->subject = $subject;
    }
@@ -38,10 +43,14 @@ class ContactFormMail extends Mailable
    public function content(): Content
    {
       return new Content(
-         view: 'email.contact',
+         view: 'email.book',
          with: [
             'name' => $this->name,
-            'email' => $this->email,
+            'lastName' => $this->lastName,
+            'services' => $this->services,
+            'healingTopics' => $this->healingTopics,
+            'preferredTime' => $this->preferredTime,
+            'cityAndState' => $this->cityAndState,
             'specialMessage' => $this->specialMessage,
          ],
       );
