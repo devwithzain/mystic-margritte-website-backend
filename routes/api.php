@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // Orders
 Route::post('/placedOrder', [OrderController::class, 'placeOrder']);
 Route::get('/admin/orders', [OrderController::class, 'getAllOrders']);
+Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus']);
 
 // Admin Routes
 Route::get("/getAllUsers", [AuthController::class, "getAllUsers"]);

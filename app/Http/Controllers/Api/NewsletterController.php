@@ -50,11 +50,12 @@ class NewsletterController extends Controller
         $subscriber = NewsletterSubscriber::where('token', $token)->first();
 
         if (!$subscriber) {
-            return redirect('http://127.0.0.1:8000')->with('error', 'Invalid or expired token.');
+            return redirect(env('FRONTEND_WEBSITE_URL') . '?status=error&message=Invalid or expired token.');
         }
 
         $subscriber->update(['is_verified' => true]);
 
-        return redirect('http://127.0.0.1:8000')->with('success', 'Your subscription has been confirmed!');
+        return redirect(env('FRONTEND_WEBSITE_URL') . '?status=success&message=Your subscription has been confirmed!');
     }
+
 }
