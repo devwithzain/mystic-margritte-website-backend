@@ -34,10 +34,6 @@ class ProductController extends Controller
             $product = Product::create([
                 'title' => $validatedData['title'],
                 'description' => $validatedData['description'],
-                'shortDescription' => $validatedData['shortDescription'],
-                'color' => $validatedData['color'],
-                'category' => $validatedData['category'],
-                'size' => $validatedData['size'],
                 'price' => $validatedData['price'],
 
                 'image' => !empty($imagePaths) ? json_encode($imagePaths) : null,

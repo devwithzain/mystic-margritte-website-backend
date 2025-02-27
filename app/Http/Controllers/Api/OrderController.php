@@ -27,7 +27,7 @@ class OrderController extends Controller
       }
 
       $orders = Order::where('user_id', $user->id)
-         ->with(['items.product', 'user', 'checkoutDetail']) // Changed 'items.products' to 'items.product'
+         ->with(['items.product', 'user', 'checkoutDetail'])
          ->orderBy('created_at', 'desc')
          ->get();
 

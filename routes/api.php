@@ -2,6 +2,7 @@
 
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\CartController;
