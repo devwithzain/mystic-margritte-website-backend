@@ -28,6 +28,7 @@ class BlogController extends Controller
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
             'short_description' => $validatedData['short_description'],
+            'category' => $validatedData['category'],
             'image' => $imageName,
         ]);
         return response()->json([
@@ -62,6 +63,7 @@ class BlogController extends Controller
         $blog->title = $validatedData['title'];
         $blog->description = $validatedData['description'];
         $blog->short_description = $validatedData['short_description'];
+        $blog->category = $validatedData['category'];
 
         if ($request->hasFile('image')) {
             if ($blog->image) {
