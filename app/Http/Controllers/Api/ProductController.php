@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Product;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
@@ -54,7 +55,7 @@ class ProductController extends Controller
         }
         return response()->json(['product' => new ProductResource($product)], 200);
     }
-    public function update(ProductRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         try {
             $product = Product::find($id);
@@ -62,29 +63,49 @@ class ProductController extends Controller
                 return response()->json(['error' => 'Product Not Found.'], 404);
             }
 
-            $validated = $request->validated();
+            $validated = $request->validate([
+                'title' => 'nullable|string|max:255',
+                'price' => 'nullable|string',
+                'description' => 'nullable|string',
+                'image' => 'nullable',
+            ]);
+
+            if ($request->has('title')) {
+                $product->title = $validated['title'];
+            }
+            if ($request->has('description')) {
+                $product->description = $validated['description'];
+            }
+            if ($request->has('price')) {
+                $product->price = $validated['price'];
+            }
+
             $imagePaths = json_decode($product->image, true) ?? [];
 
-            if ($request->hasFile('image')) {
-                // Delete old images
-                foreach ($imagePaths as $oldImage) {
-                    if (Storage::disk('public')->exists($oldImage)) {
-                        Storage::disk('public')->delete($oldImage);
+            if ($request->has('images_to_delete')) {
+                $imagesToDelete = json_decode($request->input('images_to_delete'), true);
+                foreach ($imagesToDelete as $imageUrl) {
+                    $imagePath = str_replace(env('APP_URL') . '/storage/', '', $imageUrl);
+                    if (Storage::disk('public')->exists($imagePath)) {
+                        Storage::disk('public')->delete($imagePath);
                     }
+                    $imagePaths = array_filter($imagePaths, fn($path) => $path !== $imagePath);
                 }
 
-                // Upload new images
-                $newImagePaths = [];
+                $imagePaths = array_values($imagePaths);
+            }
+
+            if ($request->hasFile('image')) {
                 foreach ($request->file('image') as $image) {
                     $imageName = 'products/' . Str::random(32) . '.' . $image->getClientOriginalExtension();
                     Storage::disk('public')->put($imageName, file_get_contents($image));
-                    $newImagePaths[] = $imageName;
+                    $imagePaths[] = $imageName; // Append new image to the existing array
                 }
-
-                $validated['image'] = !empty($newImagePaths) ? json_encode($newImagePaths) : null;
             }
 
-            $product->update($validated);
+            $product->image = json_encode($imagePaths);
+
+            $product->save();
 
             return response()->json([
                 'message' => "Product successfully updated.",

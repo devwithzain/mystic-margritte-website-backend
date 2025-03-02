@@ -19,62 +19,75 @@ class AuthController extends Controller
         $email = strtolower($request->email);
         $user = User::where('email', $email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+        // Check if user exists
+        if (!$user) {
+            return response()->json(['error' => 'Email not found.'], 404);
         }
 
+        // Check if password is correct
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Invalid password.'], 401);
+        }
+
+        // Generate token
         $token = $user->createToken($user->name . ' auth_token')->plainTextToken;
 
         return response()->json([
-            'success' => 'Login successful',
+            'success' => 'Login successful.',
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user
         ], 200);
     }
+
     public function register(RegisterRequest $request)
     {
+        // Check if email already exists
         $userEmail = User::where('email', $request->email)->first();
-
         if ($userEmail) {
-            return response()->json(['error' => 'Email already exists'], 409);
+            return response()->json(['error' => 'Email already exists.'], 409);
         }
 
+        // Create user
         $user = User::create([
             'name' => $request->name,
             'email' => strtolower($request->email),
             'password' => Hash::make($request->password)
         ]);
 
+        // Generate token
         $token = $user->createToken($user->name . ' auth_token')->plainTextToken;
 
         return response()->json([
-            'success' => 'Registration successful',
+            'success' => 'Registration successful.',
             'access_token' => $token,
             'token_type' => 'Bearer'
         ], 201);
     }
+
     public function logout(Request $request)
     {
+        // Delete all tokens for the authenticated user
         $request->user()->tokens()->delete();
 
-        return response()->json(['message' => 'Logout successful'], 200);
+        return response()->json(['message' => 'Logout successful.'], 200);
     }
+
     public function profile(Request $request)
     {
+        // Return authenticated user's profile
         return response()->json([
-            'message' => 'Profile fetched successfully',
+            'message' => 'Profile fetched successfully.',
             'data' => $request->user()
         ], 200);
     }
+
     public function updateProfile(Request $request, $id)
     {
         try {
             $user = User::find($id);
             if (!$user) {
-                return response()->json([
-                    'message' => 'User Not Found.'
-                ], 404);
+                return response()->json(['error' => 'User not found.'], 404);
             }
 
             // Validate incoming request data
@@ -84,18 +97,16 @@ class AuthController extends Controller
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             ]);
 
-            // Update name
+            // Update name if provided
             if ($request->has('name')) {
-                $user->name = Str::lower($validatedData['name']);
+                $user->name = $validatedData['name'];
             }
 
-            // Check if the email is being updated and if it already exists
+            // Update email if provided and unique
             if ($request->has('email') && $request->email !== $user->email) {
                 $existingUser = User::where('email', $request->email)->first();
                 if ($existingUser) {
-                    return response()->json([
-                        'error' => 'Email already exists.'
-                    ], 409);
+                    return response()->json(['error' => 'Email already exists.'], 409);
                 }
                 $user->email = Str::lower($validatedData['email']);
             }
@@ -104,12 +115,12 @@ class AuthController extends Controller
             if ($request->hasFile('image')) {
                 $storage = Storage::disk('public');
 
-                // Delete old image if exists and is not empty
+                // Delete old image if exists
                 if ($user->image && $storage->exists($user->image)) {
                     $storage->delete($user->image);
                 }
 
-                // Generate unique image name inside 'profile' folder
+                // Generate unique image name
                 $imageName = 'profile/' . Str::random(32) . "." . $request->image->getClientOriginalExtension();
                 $storage->put($imageName, file_get_contents($request->image->getRealPath()));
 
@@ -127,46 +138,52 @@ class AuthController extends Controller
 
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => "Email already exists.",
-                'errors' => $e->errors()
+                'error' => 'Validation failed.',
+                'messages' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
             \Log::error('Error updating profile: ' . $e->getMessage(), ['exception' => $e]);
 
             return response()->json([
-                'message' => "Something went wrong!",
-                'error' => $e->getMessage()
+                'error' => 'Something went wrong.',
+                'message' => $e->getMessage()
             ], 500);
         }
     }
+
     public function deleteAccount(Request $request)
     {
         $user = $request->user();
 
+        // Delete user and associated tokens
         $user->delete();
-
         $request->user()->tokens()->delete();
 
         return response()->json([
-            'success' => 'Account deleted successfully'
+            'success' => 'Account deleted successfully.'
         ], 200);
     }
+
     public function getAllUsers(Request $request)
     {
-        $users = User::where('role', 'user')->get()->toArray();
+        // Fetch all users with role 'user'
+        $users = User::where('role', 'user')->get();
 
         return response()->json($users, 200);
     }
+
     public function deleteUser($id)
     {
         $user = User::find($id);
 
+        // Check if user exists
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'User not found.'], 404);
         }
 
+        // Delete user
         $user->delete();
 
-        return response()->json(['success' => 'User deleted successfully'], 200);
+        return response()->json(['success' => 'User deleted successfully.'], 200);
     }
 }
