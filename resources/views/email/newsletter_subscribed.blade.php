@@ -5,7 +5,7 @@
    <title>New Newsletter Subscriber</title>
    <style>
       body {
-         font-family: Arial, sans-serif;
+         font-family: sans-serif, Arial;
          margin: 20px;
          color: #333;
       }

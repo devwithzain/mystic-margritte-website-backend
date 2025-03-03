@@ -19,15 +19,16 @@
    {{-- Action Button --}}
    @isset($actionText)
    <?php
-        $color = match ($level) {
+         $color = match ($level) {
             'success', 'error' => $level,
             default => 'primary',
-        };
-        ?>
+         };
+         ?>
    <x-mail::button :url="$actionUrl" :color="$color">
       {{ $actionText }}
       @php
-      $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173') . "/reset-password?token=" . urlencode($actionUrl);
+      $frontendUrl = env('FRONTEND_WEBSITE_URL', 'http://localhost:5173') . "/reset-password?token=" .
+      urlencode($actionUrl);
       @endphp
 
       @component('mail::button', ['url' => $frontendUrl])

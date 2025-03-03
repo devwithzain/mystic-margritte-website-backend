@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
@@ -39,7 +42,6 @@ class AuthController extends Controller
             'user' => $user
         ], 200);
     }
-
     public function register(RegisterRequest $request)
     {
         // Check if email already exists
@@ -64,7 +66,6 @@ class AuthController extends Controller
             'token_type' => 'Bearer'
         ], 201);
     }
-
     public function logout(Request $request)
     {
         // Delete all tokens for the authenticated user
@@ -72,7 +73,6 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logout successful.'], 200);
     }
-
     public function profile(Request $request)
     {
         // Return authenticated user's profile
@@ -81,7 +81,6 @@ class AuthController extends Controller
             'data' => $request->user()
         ], 200);
     }
-
     public function updateProfile(Request $request, $id)
     {
         try {
@@ -150,7 +149,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
     public function deleteAccount(Request $request)
     {
         $user = $request->user();
@@ -163,7 +161,6 @@ class AuthController extends Controller
             'success' => 'Account deleted successfully.'
         ], 200);
     }
-
     public function getAllUsers(Request $request)
     {
         // Fetch all users with role 'user'
@@ -171,7 +168,6 @@ class AuthController extends Controller
 
         return response()->json($users, 200);
     }
-
     public function deleteUser($id)
     {
         $user = User::find($id);
@@ -185,5 +181,79 @@ class AuthController extends Controller
         $user->delete();
 
         return response()->json(['success' => 'User deleted successfully.'], 200);
+    }
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['error' => 'Email not found.'], 404);
+        }
+
+        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'token' => $code,
+                'created_at' => Carbon::now(),
+            ]
+        );
+
+        Mail::send('email.password_reset', ['code' => $code], function ($message) use ($request) {
+            $message->to($request->email);
+            $message->subject('Your Password Reset Code');
+        });
+
+        return response()->json(['success' => 'A 6-digit code has been sent to your email.'], 200);
+    }
+    public function verifyResetCode(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|digits:6',
+        ]);
+
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->code)
+            ->first();
+
+        if (!$reset) {
+            return response()->json(['error' => 'Invalid or expired code.'], 400);
+        }
+
+        $expirationTime = Carbon::parse($reset->created_at)->addMinutes(10);
+        if (Carbon::now()->gt($expirationTime)) {
+            return response()->json(['error' => 'The code has expired.'], 400);
+        }
+
+        return response()->json(['success' => 'Code verified successfully.'], 200);
+    }
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|digits:6',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->code)
+            ->first();
+
+        if (!$reset) {
+            return response()->json(['error' => 'Invalid or expired code.'], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return response()->json(['success' => 'Password reset successfully.'], 200);
     }
 }

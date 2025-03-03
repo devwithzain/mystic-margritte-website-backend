@@ -4,26 +4,26 @@
 <head>
    <title>New Booking.</title>
    <style>
-   body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 20px;
-      color: #333;
-   }
+      body {
+         font-family: sans-serif, Arial;
+         line-height: 1.6;
+         margin: 20px;
+         color: #333;
+      }
 
-   h2 {
-      color: #2c3e50;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-   }
+      h2 {
+         color: #2c3e50;
+         border-bottom: 2px solid #eee;
+         padding-bottom: 10px;
+      }
 
-   p {
-      margin: 10px 0;
-   }
+      p {
+         margin: 10px 0;
+      }
 
-   strong {
-      color: #2c3e50;
-   }
+      strong {
+         color: #2c3e50;
+      }
    </style>
 </head>
 

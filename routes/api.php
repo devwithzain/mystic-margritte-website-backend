@@ -78,6 +78,11 @@ Route::get('/newsletter/subscribes', [NewsletterController::class, 'index']);
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
 Route::get('/newsletter/verify/{token}', [NewsletterController::class, 'verify'])->name('newsletter.verify');
 
+// forgot password
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/verify-reset-code', [AuthController::class, 'verifyResetCode']);
+
 // Payment
 Route::post('/payment-intent', function (Request $request) {
     Stripe::setApiKey(env('STRIPE_SECRET'));
