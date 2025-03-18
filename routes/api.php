@@ -11,7 +11,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\BookNowController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ResetPasswordController;
 
@@ -72,6 +74,20 @@ Route::post('/blog', [BlogController::class, 'store']);
 Route::get('/blog/{id}', [BlogController::class, 'show']);
 Route::post('/blog/{id}', [BlogController::class, 'update']);
 Route::delete('/blog/{id}', [BlogController::class, 'destroy']);
+
+// Services
+Route::get('/services', [ServiceController::class, 'index']);
+Route::post('/service', [ServiceController::class, 'store']);
+Route::get('/service/{id}', [ServiceController::class, 'show']);
+Route::post('/service/{id}', [ServiceController::class, 'update']);
+Route::delete('/service/{id}', [ServiceController::class, 'destroy']);
+
+// Categories
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::post('/category', [CategoryController::class, 'store']);
+Route::get('/category/{id}', [CategoryController::class, 'show']);
+Route::post('/category/{id}', [CategoryController::class, 'update']);
+Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
 
 // Newsletter
 Route::get('/newsletter/subscribes', [NewsletterController::class, 'index']);

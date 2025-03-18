@@ -14,9 +14,10 @@ class FormController extends Controller
    {
       $data = $request->validated();
       $subject = "Message from" . $data['name'];
+      $userEmail = $data['email'];
 
       try {
-         Mail::to(config('mail.from.address'))->send(new ContactFormMail($subject, data: $data));
+         Mail::to(config('mail.from.address'))->send((new ContactFormMail($subject, data: $data))->from($userEmail, $userEmail));
       } catch (\Exception $e) {
          Log::error('Failed to send contact form email: ' . $e->getMessage());
          return response()->json(['error' => 'Failed to send email. Please try again later.'], 500);
