@@ -10,9 +10,11 @@ use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\BookNowController;
+use App\Http\Controllers\Api\TimeSlotController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ResetPasswordController;
@@ -46,6 +48,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Orders
     Route::get('/user/orders', [OrderController::class, 'getAllOrdersForUser']);
+
+    // TimeSlots
+    Route::get('/timeslots', [TimeSlotController::class, 'index']);
+    Route::post('/timeslot', [TimeSlotController::class, 'store']);
+    Route::put('/timeslot/{id}', [TimeSlotController::class, 'update']);
+    Route::delete('/timeslot/{id}', [TimeSlotController::class, 'destroy']);
+
+    // Bookings
+    Route::post('/booking', [BookingController::class, 'store']);
+    Route::get('/bookings', [BookingController::class, 'index']);
 });
 
 // Orders
