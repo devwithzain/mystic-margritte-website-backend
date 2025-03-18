@@ -10,6 +10,13 @@ class TimeSlotController extends Controller
 {
    public function index()
    {
+      $timeslots = TimeSlot::all();
+      return response()->json([
+         'timeslots' => $timeslots
+      ], 200);
+   }
+   public function availableSlots()
+   {
       $timeslots = TimeSlot::where('status', 'available')->get();
       return response()->json([
          'timeslots' => $timeslots
@@ -34,6 +41,13 @@ class TimeSlotController extends Controller
       ]);
 
       return response()->json(['message' => 'Time slot created successfully!'], 201);
+   }
+   public function show($id)
+   {
+      $timeSlot = TimeSlot::findOrFail($id);
+      return response()->json([
+         'timeslot' => $timeSlot
+      ], 200);
    }
    public function update(Request $request, $id)
    {

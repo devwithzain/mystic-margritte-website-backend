@@ -51,6 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // TimeSlots
     Route::get('/timeslots', [TimeSlotController::class, 'index']);
+    Route::get('/availabletimeslots', [TimeSlotController::class, 'availableSlots']);
+    Route::get('/timeslot/{id}', [TimeSlotController::class, 'show']);
     Route::post('/timeslot', [TimeSlotController::class, 'store']);
     Route::put('/timeslot/{id}', [TimeSlotController::class, 'update']);
     Route::delete('/timeslot/{id}', [TimeSlotController::class, 'destroy']);
