@@ -25,7 +25,6 @@ class TimeSlotController extends Controller
    public function store(Request $request)
    {
       $validatedData = $request->validate([
-         'user_id' => 'required|exists:users,id',
          'date' => 'required|string',
          'start_time' => 'required|date_format:H:i:s',
          'end_time' => 'required|date_format:H:i:s',
@@ -33,7 +32,6 @@ class TimeSlotController extends Controller
       ]);
 
       TimeSlot::create([
-         'user_id' => $validatedData['user_id'],
          'date' => $validatedData['date'],
          'start_time' => $validatedData['start_time'],
          'end_time' => $validatedData['end_time'],
