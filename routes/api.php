@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BookController;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Illuminate\Http\Request;
@@ -66,6 +67,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/placedOrder', [OrderController::class, 'placeOrder']);
 Route::get('/admin/orders', [OrderController::class, 'getAllOrders']);
 Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus']);
+
+// Booking
+Route::post('/placedBooking', [BookController::class, 'placeBooking']);
+Route::get('/admin/bookings', [BookController::class, 'getAllBookings']);
+Route::put('/orders/{id}/status', [BookController::class, 'updateOrderStatus']);
 
 // Admin Routes
 Route::get("/getAllUsers", [AuthController::class, "getAllUsers"]);
