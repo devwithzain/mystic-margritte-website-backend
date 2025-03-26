@@ -22,17 +22,14 @@ class AuthController extends Controller
         $email = strtolower($request->email);
         $user = User::where('email', $email)->first();
 
-        // Check if user exists
         if (!$user) {
             return response()->json(['error' => 'Email not found.'], 404);
         }
 
-        // Check if password is correct
         if (!Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'Invalid password.'], 401);
         }
 
-        // Generate token
         $token = $user->createToken($user->name . ' auth_token')->plainTextToken;
 
         return response()->json([
@@ -44,7 +41,6 @@ class AuthController extends Controller
     }
     public function register(RegisterRequest $request)
     {
-        // Check if email already exists
         $userEmail = User::where('email', $request->email)->first();
         if ($userEmail) {
             return response()->json(['error' => 'Email already exists.'], 409);

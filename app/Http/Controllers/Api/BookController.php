@@ -18,6 +18,14 @@ class BookController extends Controller
          ->get();
       return response()->json($orders);
    }
+   public function getSingleBooking($id)
+   {
+      $booking = Booking::with(['items.service', 'user', 'bookingDetail'])->find($id);
+      if (!$booking) {
+         return response()->json(['error' => 'Booking Not Found.'], 404);
+      }
+      return response()->json($booking);
+   }
    public function getAllBookingForUser()
    {
       $user = Auth::user();
@@ -36,7 +44,6 @@ class BookController extends Controller
    {
       $request->validate([
          'user_id' => 'required|exists:users,id',
-         'service_id' => 'required|exists:products,id',
       ]);
 
       try {
@@ -54,7 +61,7 @@ class BookController extends Controller
 
          BookingDetail::create([
             'service_id' => $request->service_id,
-            'booking_id' => $request->service_id,
+            'booking_id' => $booking->id,
             'time_slot_id' => $request->time_slot_id,
             'birth_date' => $request->birth_date,
             'birth_time' => $request->birth_time,
@@ -74,25 +81,18 @@ class BookController extends Controller
             'status' => $request->status,
          ]);
 
-         \Log::info('Booking process completed successfully', ['booking_id' => $booking->id]);
 
          return response()->json([
             'status' => 200,
-            'message' => 'Order placed successfully.',
+            'message' => 'Booking placed successfully.',
             'booking_id' => $booking->id,
          ], 201);
       } catch (\Exception $e) {
-         \Log::error('Booking creation failed', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-         ]);
-
          return response()->json([
             'message' => 'Failed to place the order.',
             'error' => $e->getMessage(),
          ], 500);
       }
-
    }
    public function updateOrderStatus(Request $request, $orderId)
    {

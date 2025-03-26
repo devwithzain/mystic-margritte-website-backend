@@ -71,6 +71,7 @@ Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])
 // Booking
 Route::post('/placedBooking', [BookController::class, 'placeBooking']);
 Route::get('/admin/bookings', [BookController::class, 'getAllBookings']);
+Route::get('/admin/booking/{id}', [BookController::class, 'getSingleBooking']);
 Route::put('/orders/{id}/status', [BookController::class, 'updateOrderStatus']);
 
 // Admin Routes
