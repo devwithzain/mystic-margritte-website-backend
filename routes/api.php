@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\BookFormController;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Illuminate\Http\Request;
@@ -50,18 +51,18 @@ Route::middleware('auth:sanctum')->group(function () {
     // Orders
     Route::get('/user/orders', [OrderController::class, 'getAllOrdersForUser']);
 
-    // TimeSlots
-    Route::get('/timeslots', [TimeSlotController::class, 'index']);
-    Route::get('/availabletimeslots', [TimeSlotController::class, 'availableSlots']);
-    Route::get('/timeslot/{id}', [TimeSlotController::class, 'show']);
-    Route::post('/timeslot', [TimeSlotController::class, 'store']);
-    Route::post('/timeslot/{id}', [TimeSlotController::class, 'update']);
-    Route::delete('/timeslot/{id}', [TimeSlotController::class, 'destroy']);
-
     // Bookings
     Route::post('/booking', [BookingController::class, 'store']);
     Route::get('/bookings', [BookingController::class, 'index']);
 });
+
+// TimeSlots
+Route::get('/timeslots', [TimeSlotController::class, 'index']);
+Route::get('/availabletimeslots', [TimeSlotController::class, 'availableSlots']);
+Route::get('/timeslot/{id}', [TimeSlotController::class, 'show']);
+Route::post('/timeslot', [TimeSlotController::class, 'store']);
+Route::post('/timeslot/{id}', [TimeSlotController::class, 'update']);
+Route::delete('/timeslot/{id}', [TimeSlotController::class, 'destroy']);
 
 // Orders
 Route::post('/placedOrder', [OrderController::class, 'placeOrder']);
@@ -72,7 +73,7 @@ Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])
 Route::post('/placedBooking', [BookController::class, 'placeBooking']);
 Route::get('/admin/bookings', [BookController::class, 'getAllBookings']);
 Route::get('/admin/booking/{id}', [BookController::class, 'getSingleBooking']);
-Route::put('/orders/{id}/status', [BookController::class, 'updateOrderStatus']);
+Route::put('/bookings/{id}/status', [BookController::class, 'updateBookingStatus']);
 
 // Admin Routes
 Route::get("/getAllUsers", [AuthController::class, "getAllUsers"]);
@@ -80,7 +81,8 @@ Route::delete("/deleteUser/{id}", [AuthController::class, "deleteUser"]);
 
 // Contact Forms
 Route::post('/contact', [FormController::class, 'sendContactForm']);
-Route::post('/book-now', [BookNowController::class, 'sendBookForm']);
+// Route::post('/book-now', [BookNowController::class, 'sendBookForm']);
+Route::post('/send-book-form', [BookFormController::class, 'sendBookForm']);
 
 // Products
 Route::get('/products', [ProductController::class, 'index']);
@@ -134,5 +136,17 @@ Route::post('/payment-intent', function (Request $request) {
 
     return response()->json([
         'clientSecret' => $paymentIntent->client_secret,
+    ]);
+});
+
+Route::get('/generate-meeting', function () {
+    $meetingId = 'meeting-' . Str::random(10);
+    $baseUrl = 'https://8x8.vc/vpaas-magic-cookie-ba4f42f23cfc4f4ea68c6ad2cbd98fc2';
+
+    return response()->json([
+        'roomName' => "vpaas-magic-cookie-ba4f42f23cfc4f4ea68c6ad2cbd98fc2/" . $meetingId,
+        'meetingLink' => $baseUrl . '/' . $meetingId,
+        'success' => true,
+        'timestamp' => now()->toDateTimeString()
     ]);
 });

@@ -8,21 +8,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 
-class ContactFormMail extends Mailable
+class BookFormMail extends Mailable
 {
    use Queueable, SerializesModels;
 
-   public $name;
-   public $email;
-   public $specialMessage;
    public $subject;
+   public $data;
 
    public function __construct($subject, $data)
    {
-      $this->name = $data['name'];
-      $this->email = $data['email'];
-      $this->specialMessage = $data['specialMessage'];
       $this->subject = $subject;
+      $this->data = $data;
    }
 
    public function envelope(): Envelope
@@ -35,12 +31,8 @@ class ContactFormMail extends Mailable
    public function content(): Content
    {
       return new Content(
-         view: 'email.contact',
-         with: [
-            'name' => $this->name,
-            'email' => $this->email,
-            'specialMessage' => $this->specialMessage,
-         ],
+         view: 'email.book',
+         with: ['data' => $this->data],
       );
    }
 

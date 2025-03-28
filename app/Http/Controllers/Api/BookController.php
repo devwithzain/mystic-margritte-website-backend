@@ -94,25 +94,24 @@ class BookController extends Controller
          ], 500);
       }
    }
-   public function updateOrderStatus(Request $request, $orderId)
+   public function updateBookingStatus(Request $request, $bookid)
    {
       $request->validate([
          'status' => 'required|in:pending,processing,paid,canceled,failed',
       ]);
 
-      $order = Booking::find($orderId);
+      $booking = Booking::find($bookid);
 
-      if (!$order) {
-         return response()->json(['message' => 'Order not found'], 404);
+      if (!$booking) {
+         return response()->json(['message' => 'Booking not found'], 404);
       }
 
-      $order->status = $request->status;
-      $order->save();
+      $booking->status = $request->status;
+      $booking->save();
 
       return response()->json([
-         'message' => 'Order status updated successfully',
-         'order' => $order,
+         'message' => 'booking status updated successfully',
+         'booking' => $booking,
       ]);
    }
-
 }
