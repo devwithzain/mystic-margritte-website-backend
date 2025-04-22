@@ -12,7 +12,6 @@ class BookingDetail extends Model
     protected $fillable = [
         'service_id',
         'booking_id',
-        'booking_id',
         'time_slot_id',
         'birth_date',
         'birth_time',
