@@ -9,6 +9,7 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "square/square": "^43.0",
         "stripe/stripe-php": "^16.3"
     },
     "require-dev": {

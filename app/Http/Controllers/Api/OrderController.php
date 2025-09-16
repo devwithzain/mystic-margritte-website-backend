@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Mail\OrderPlacedMail;
 use App\Models\CheckoutDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -70,6 +72,8 @@ class OrderController extends Controller
             'zip' => $request->zip,
             'agreed_terms' => $request->agreed_terms,
          ]);
+         
+         Mail::to($order->user->email)->send(new OrderPlacedMail($order));
 
          return response()->json([
             'status' => 200,

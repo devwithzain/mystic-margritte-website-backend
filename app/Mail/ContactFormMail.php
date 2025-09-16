@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Support\Facades\Log;
 
 class ContactFormMail extends Mailable
 {
@@ -19,6 +20,8 @@ class ContactFormMail extends Mailable
 
    public function __construct($subject, $data)
    {
+      Log::error('Failed to send contact form email: ', $data);
+
       $this->name = $data['name'];
       $this->email = $data['email'];
       $this->specialMessage = $data['specialMessage'];

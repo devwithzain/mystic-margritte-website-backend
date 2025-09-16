@@ -110,6 +110,8 @@ class BlogController extends Controller
                 'blog' => $blog
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Error updating blog: ' . $e->getMessage(), ['exception' => $e]);
+
             return response()->json([
                 'message' => "Something went wrong!",
                 'error' => $e->getMessage()

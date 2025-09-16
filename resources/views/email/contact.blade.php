@@ -2,74 +2,36 @@
 <html>
 
 <head>
-   <title>New Contact Message.</title>
+   <title>New Message.</title>
    <style>
-   * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-   }
+      body {
+         font-family: sans-serif, Arial;
+         line-height: 1.6;
+         margin: 20px;
+         color: #333;
+      }
 
-   .main {
-      width: 500px;
-      padding: 40px;
-      border-radius: 20px;
-      background-color: #000;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 24px;
-   }
+      h2 {
+         color: #2c3e50;
+         border-bottom: 2px solid #eee;
+         padding-bottom: 10px;
+      }
 
-   h2 {
-      color: #fff;
-      font-size: 30px;
-      border-bottom: 2px solid #ddd;
-      width: fit-content;
-   }
+      p {
+         margin: 10px 0;
+      }
 
-   h3 {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 5px;
-      text-align: center;
-      font-size: 24px;
-      color: #000;
-      border: 1px solid #ddd;
-   }
-
-   p {
-      color: #fff;
-      font-size: 18px;
-   }
-
-   img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-   }
-
-   .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-   }
+      strong {
+         color: #2c3e50;
+      }
    </style>
 </head>
 
 <body>
-   <div class="main">
-      <div class="logo">
-         <img src="{{ asset('logo.png') }}" alt="Logo">
-      </div>
-      <h2>New Contact Message.</h2>
-      <p><strong>Name:</strong> {{ $name }}</p>
-      <p><strong>Email:</strong> {{ $email }}</p>
-      <p><strong>Special Message:</strong> {{ $specialMessage }}</p>
-   </div>
+   <h2>New Message.</h2>
+   <p><strong>Name:</strong> {{ $name }}</p>
+   <p><strong>Email:</strong> {{ $email }}</p>
+   <p><strong>Special Message:</strong> {{ $specialMessage }}</p>
 </body>
 
 </html>

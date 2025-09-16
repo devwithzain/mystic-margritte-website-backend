@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\Api\BookController;
-use App\Http\Controllers\Api\BookFormController;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CommentController;
-use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\BookNowController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\BookFormController;
 use App\Http\Controllers\Api\TimeSlotController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\NewsletterController;
@@ -50,19 +51,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Orders
     Route::get('/user/orders', [OrderController::class, 'getAllOrdersForUser']);
-
-    // Bookings
+    
+     // Bookings
     Route::post('/booking', [BookingController::class, 'store']);
     Route::get('/bookings', [BookingController::class, 'index']);
 });
-
-// TimeSlots
-Route::get('/timeslots', [TimeSlotController::class, 'index']);
-Route::get('/availabletimeslots', [TimeSlotController::class, 'availableSlots']);
-Route::get('/timeslot/{id}', [TimeSlotController::class, 'show']);
-Route::post('/timeslot', [TimeSlotController::class, 'store']);
-Route::post('/timeslot/{id}', [TimeSlotController::class, 'update']);
-Route::delete('/timeslot/{id}', [TimeSlotController::class, 'destroy']);
 
 // Orders
 Route::post('/placedOrder', [OrderController::class, 'placeOrder']);
@@ -75,13 +68,21 @@ Route::get('/admin/bookings', [BookController::class, 'getAllBookings']);
 Route::get('/admin/booking/{id}', [BookController::class, 'getSingleBooking']);
 Route::put('/bookings/{id}/status', [BookController::class, 'updateBookingStatus']);
 
+// TimeSlots
+Route::get('/timeslots', [TimeSlotController::class, 'index']);
+Route::get('/availabletimeslots', [TimeSlotController::class, 'availableSlots']);
+Route::get('/timeslot/{id}', [TimeSlotController::class, 'show']);
+Route::post('/timeslot', [TimeSlotController::class, 'store']);
+Route::post('/timeslot/{id}', [TimeSlotController::class, 'update']);
+Route::delete('/timeslot/{id}', [TimeSlotController::class, 'destroy']);
+
 // Admin Routes
 Route::get("/getAllUsers", [AuthController::class, "getAllUsers"]);
 Route::delete("/deleteUser/{id}", [AuthController::class, "deleteUser"]);
 
 // Contact Forms
 Route::post('/contact', [FormController::class, 'sendContactForm']);
-// Route::post('/book-now', [BookNowController::class, 'sendBookForm']);
+Route::post('/book-now', [BookNowController::class, 'sendBookForm']);
 Route::post('/send-book-form', [BookFormController::class, 'sendBookForm']);
 
 // Products

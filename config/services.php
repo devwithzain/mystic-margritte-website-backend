@@ -28,11 +28,17 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    'zoom' => [
+        'account_id' => env('ZOOM_S2S_ACCOUNT_ID'),
+        'client_id' => env('ZOOM_S2S_CLIENT_ID'),
+        'client_secret' => env('ZOOM_S2S_CLIENT_SECRET'),
+        'default_user' => env('ZOOM_DEFAULT_USER_EMAIL'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
 ];

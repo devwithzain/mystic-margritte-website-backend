@@ -4,74 +4,44 @@
 <head>
    <title>Password Reset Code</title>
    <style>
-   * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-   }
+      body {
+         font-family: sans-serif, Arial, ;
+         line-height: 1.6;
+         max-width: 600px;
+         margin: 0 auto;
+         padding: 20px;
+         background-color: #f5f5f5;
+      }
 
-   .main {
-      width: 500px;
-      padding: 40px;
-      border-radius: 20px;
-      background-color: #000;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 24px;
-   }
+      h2 {
+         color: #333;
+         border-bottom: 2px solid #ddd;
+         padding-bottom: 10px;
+      }
 
-   h2 {
-      color: #fff;
-      font-size: 30px;
-      border-bottom: 2px solid #ddd;
-      width: fit-content;
-   }
+      h3 {
+         background-color: #fff;
+         padding: 15px;
+         border-radius: 5px;
+         text-align: center;
+         font-size: 24px;
+         color: #2c3e50;
+         border: 1px solid #ddd;
+      }
 
-   h3 {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 5px;
-      text-align: center;
-      font-size: 24px;
-      color: #000;
-      border: 1px solid #ddd;
-   }
-
-
-   p {
-      color: #fff;
-      font-size: 18px;
-   }
-
-   img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-   }
-
-   .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-   }
+      p {
+         color: #666;
+         margin: 15px 0;
+      }
    </style>
 </head>
 
 <body>
-   <div class="main">
-      <div class="logo">
-         <img src="{{ asset('logo.png') }}" alt="Logo">
-      </div>
-      <h2>Password Reset Code.</h2>
-      <p>Your 6-digit password reset code is:</p>
-      <h3>{{$code}}</h3>
-      <p>This code will expire in 10 minutes.</p>
-      <p>If you didn't request this, you can ignore this email.</p>
-   </div>
+   <h2>Password Reset Code</h2>
+   <p>Your 6-digit password reset code is:</p>
+   <h3>{{ $code }}</h3>
+   <p>This code will expire in 10 minutes.</p>
+   <p>If you didn't request this, you can ignore this email.</p>
 </body>
 
 </html>
