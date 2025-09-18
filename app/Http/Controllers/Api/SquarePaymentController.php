@@ -2,56 +2,51 @@
 
 namespace App\Http\Controllers\Api;
 
+use Square\Types\Money;
 use Square\SquareClient;
-use Illuminate\Support\Str;
+use Square\Types\Currency;
 use Illuminate\Http\Request;
-use Square\Legacy\Models\Money;
+use Square\Types\CashPaymentDetails;
 use App\Http\Controllers\Controller;
 use Square\Payments\Requests\CreatePaymentRequest;
 
 class SquarePaymentController extends Controller
 {
-   protected function squareClient(): SquareClient
-   {
-      return new SquareClient(
-         token: env('SQUARE_ACCESS_TOKEN'),
-         options: env('SQUARE_ENVIRONMENT'),
-      );
-   }
-
    public function pay(Request $request)
    {
       try {
-         $sourceId = $request->input('sourceId');
-         $amount = $request->input('amount', 100);
+         $validated = $request->validate([
+            'sourceId' => 'required|string',
+            'amount' => 'required|numeric|min:1',
+            'currency' => 'required|string|size:3',
+            'buyerEmail' => 'required|email',
+         ]);
 
-         $money = new Money(
-            amount: (int) $amount,
-            currency: 'USD'
+         $square = new SquareClient("SQUARE_ACCESS_TOKEN");
+         $response = $square->payments->create(
+            request: new CreatePaymentRequest(
+               [
+                  'idempotencyKey' => '4935a656-a929-4792-b97c-8848be85c27c',
+                  'sourceId' => $validated['sourceId'],
+                  'amountMoney' => new Money([
+                     'amount' => $validated['amount'],
+                     'currency' => Currency::from($validated['currency'])->value
+                  ]),
+                  'cashDetails' => new CashPaymentDetails([
+                     'buyerSuppliedMoney' => new Money([
+                        'amount' => $validated['amount'],
+                        'currency' => Currency::from($validated['currency'])->value
+                     ])
+                  ]),
+               ],
+            )
          );
 
-         $paymentRequest = new CreatePaymentRequest(
-            amount: $money
-         );
+         return response()->json(['errors' => $response->getErrors()], 400);
 
-         $response = $this->squareClient()->getPaymentsApi()->createPayment($paymentRequest);
-
-         if ($response->isSuccess()) {
-            return response()->json([
-               'success' => true,
-               'payment' => $response->getResult()->getPayment(),
-            ]);
-         }
-
-         return response()->json([
-            'success' => false,
-            'errors' => $response->getErrors(),
-         ], 400);
       } catch (\Exception $e) {
          return response()->json([
-            'success' => false,
-            'message' => 'Payment failed',
-            'error' => $e->getMessage(),
+            'error' => $e->getMessage()
          ], 500);
       }
    }

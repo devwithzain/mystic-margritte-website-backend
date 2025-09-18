@@ -37,6 +37,7 @@ class BookingController extends Controller
 
    public function index()
    {
-      return response()->json(Booking::where('user_id', Auth::id())->with('service', 'timeSlot')->get());
+      $bookings = Booking::where('user_id', Auth::id())->with('service', 'timeSlot')->get();
+      return response()->json(['bookings' => $bookings]);
    }
 }

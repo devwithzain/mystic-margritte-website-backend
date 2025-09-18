@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\TimeSlotController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\SquarePaymentController;
 
 // Auth Routes
 Route::post("/login", [AuthController::class, "login"]);
@@ -51,11 +52,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Orders
     Route::get('/user/orders', [OrderController::class, 'getAllOrdersForUser']);
-    
-     // Bookings
-    Route::post('/booking', [BookingController::class, 'store']);
-    Route::get('/bookings', [BookingController::class, 'index']);
+
+    // Bookings
+    Route::get('/user/bookings', [BookController::class, 'getAllBookingForUser']);
 });
+
+// Bookings
+Route::post('/booking', [BookingController::class, 'store']);
+Route::get('/bookings', [BookingController::class, 'index']);
 
 // Orders
 Route::post('/placedOrder', [OrderController::class, 'placeOrder']);
@@ -67,6 +71,7 @@ Route::post('/placedBooking', [BookController::class, 'placeBooking']);
 Route::get('/admin/bookings', [BookController::class, 'getAllBookings']);
 Route::get('/admin/booking/{id}', [BookController::class, 'getSingleBooking']);
 Route::put('/bookings/{id}/status', [BookController::class, 'updateBookingStatus']);
+Route::put('/bookings/{id}/meeting-status', [BookController::class, 'updateMeetingStatus']);
 
 // TimeSlots
 Route::get('/timeslots', [TimeSlotController::class, 'index']);
@@ -139,6 +144,8 @@ Route::post('/payment-intent', function (Request $request) {
         'clientSecret' => $paymentIntent->client_secret,
     ]);
 });
+
+Route::post('/square/pay', [SquarePaymentController::class, 'pay']);
 
 Route::get('/generate-meeting', function () {
     $meetingId = 'meeting-' . Str::random(10);

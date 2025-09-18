@@ -26,8 +26,8 @@ class TimeSlotController extends Controller
    {
       $validatedData = $request->validate([
          'date' => 'required|string',
-         'start_time' => 'required|date_format:H:i:s',
-         'end_time' => 'required|date_format:H:i:s',
+         'start_time' => 'required|string',
+         'end_time' => 'required|string',
          'status' => 'required|in:available,unavailable,booked'
       ]);
 
@@ -51,8 +51,8 @@ class TimeSlotController extends Controller
    {
       $validatedData = $request->validate([
          'date' => 'nullable|string',
-         'start_time' => 'nullable|date_format:H:i:s',
-         'end_time' => 'nullable|date_format:H:i:s',
+         'start_time' => 'nullable|string',
+         'end_time' => 'nullable|string',
          'status' => 'nullable|in:available,unavailable,booked'
       ]);
 
